@@ -1,0 +1,19 @@
+{
+  "name": "localstorage-nodejs",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "A implementation of the localStorage Web API in Node.js!",
+  "module": "index.mjs",
+  "author": "CrownAlexanRaven",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.cjs"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrownAlexanRaven/localStorage-nodejs"
+  }
+}
