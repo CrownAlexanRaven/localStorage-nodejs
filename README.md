@@ -37,15 +37,36 @@ let localStorage = new localStorageSync('yourDatabaseNameHere');
 2. Synchronous vs Asynchronous Mode
 
 There are two modes available: synchronous and asynchronous.
+
+By default you will have synchronous mode enabled.
+
+CommonJS
+
 Synchronous Mode
 ```js
-const { localStorageSync } = require('localstorage-nodejs');
-let localStorage = new localStorageSync("foo"); // Synchronous mode
+const localStorageConstruct = require('localstorage-nodejs');
+let localStorage = new localStorageConstruct("foo", false); // Synchronous mode. The false is not required as it defaults to synchronous.
 ```
 Asynchronous Mode
 ```js
-const { localStorageAsync } = require('localstorage-nodejs');
-let localStorage = new localStorageSync("foo"); // Asynchronous mode
+const localStorageConstruct = require('localstorage-nodejs');
+let localStorage = new localStorageConstruct("foo", true); // Asynchronous mode. The true arg is required.
+```
+ECMAScript
+
+Synchronous Mode
+```js
+const { default: localStorageConstruct } = await import('../index.mjs');
+// or you can import with 
+import localStorageConstruct from 'localstorage-nodejs';
+let localStorage = new localStorageConstruct("foo", false); // Synchronous mode. The false is not required as it defaults to synchronous.
+```
+Asynchronous Mode
+```js
+const { default: localStorageConstruct } = await import('../index.mjs');
+// or you can import with 
+import localStorageConstruct from 'localstorage-nodejs';
+let localStorage = new localStorageConstruct("foo", true); // Asynchronous mode. The true arg is required.
 ```
 The library uses a directory named based on the script’s choice, and the database name is the argument given to the constructor.
 The database name must be a string. 
