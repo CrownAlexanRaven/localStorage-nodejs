@@ -14,6 +14,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CrownAlexanRaven/localStorage-nodejs"
+    "url": "git+https://github.com/CrownAlexanRaven/localStorage-nodejs.git"
   }
 }
