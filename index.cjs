@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-class LocalStorage {
+module.exports = class {
     constructor(store_prefix, isAsync = false) {
         this.isAsync = isAsync;
         this.store_prefix = path.join(process.cwd(), store_prefix);
@@ -42,7 +42,7 @@ class LocalStorage {
     clear() {
         if (this.isAsync) {
             return (async () => {
-                async function clearDirectory(directoryPath) {
+                const clearDirectory = async (directoryPath) => {
                     const files = await fs.promises.readdir(directoryPath);
                     for (const file of files) {
                         const currentPath = path.join(directoryPath, file);
@@ -54,30 +54,25 @@ class LocalStorage {
                             await fs.promises.unlink(currentPath);
                         }
                     }
-                }
+                };
 
-                if (await fs.promises.exists(this.store_prefix)) {
-                    const files = await fs.promises.readdir(this.store_prefix);
-                    for (const file of files) {
-                        const currentPath = path.join(this.store_prefix, file);
-                        const stats = await fs.promises.stat(currentPath);
-                        if (stats.isDirectory()) {
-                            await clearDirectory(currentPath);
-                            await fs.promises.rmdir(currentPath);
-                        } else {
-                            await fs.promises.unlink(currentPath);
-                        }
+                try {
+                    await fs.promises.access(this.store_prefix);
+                    await clearDirectory(this.store_prefix);
+                } catch (error) {
+                    if (error.code !== 'ENOENT') {
+                        throw error;
                     }
                 }
             })();
         } else {
-            const clearDirectory = (directoryPath) => {
+            const clearDirectorySync = (directoryPath) => {
                 const files = fs.readdirSync(directoryPath);
                 for (const file of files) {
                     const currentPath = path.join(directoryPath, file);
                     const stats = fs.statSync(currentPath);
                     if (stats.isDirectory()) {
-                        clearDirectory(currentPath);
+                        clearDirectorySync(currentPath);
                         fs.rmdirSync(currentPath);
                     } else {
                         fs.unlinkSync(currentPath);
@@ -86,15 +81,7 @@ class LocalStorage {
             };
 
             if (fs.existsSync(this.store_prefix)) {
-                fs.readdirSync(this.store_prefix).forEach((file) => {
-                    const currentPath = path.join(this.store_prefix, file);
-                    if (fs.statSync(currentPath).isDirectory()) {
-                        clearDirectory(currentPath);
-                        fs.rmdirSync(currentPath);
-                    } else {
-                        fs.unlinkSync(currentPath);
-                    }
-                });
+                clearDirectorySync(this.store_prefix);
             }
         }
     }
@@ -103,8 +90,13 @@ class LocalStorage {
         const keypath = path.join(this.store_prefix, key);
         if (this.isAsync) {
             return (async () => {
-                if (await fs.promises.exists(keypath)) {
+                try {
+                    await fs.promises.access(keypath);
                     await fs.promises.unlink(keypath);
+                } catch (error) {
+                    if (error.code !== 'ENOENT') {
+                        throw error;
+                    }
                 }
             })();
         } else {
@@ -128,20 +120,24 @@ class LocalStorage {
         if (this.isAsync) {
             return (async () => {
                 try {
-                    await fs.promises.access(keypath, fs.constants.F_OK);
-                    return fs.promises.readFile(keypath, 'utf8');
+                    await fs.promises.access(keypath);
+                    return await fs.promises.readFile(keypath, 'utf8');
                 } catch (error) {
-                    return 'failure'; 
+                    if (error.code === 'ENOENT') {
+                        return null;
+                    }
+                    throw error;
                 }
             })();
         } else {
             try {
                 return fs.readFileSync(keypath, 'utf8');
             } catch (error) {
-                return null;
+                if (error.code === 'ENOENT') {
+                    return null;
+                }
+                throw error;
             }
         }
     }
-}
-
-module.exports = localStorage;
+};
