@@ -20,21 +20,8 @@ pnpm add https://github.com/CrownAlexanRaven/localStorage-nodejs.git
 ```
 
 # Usage
-There are only 3 things to remember about this library.
-1. Creating the localStorage Object
-You can create the localStorage object in either synchronous or asynchronous mode.
-
-ECMAScript (ESM)
-```js
-const { localStorageSync } = await import('localStorage-nodejs');
-let localStorage = new localStorageSync('yourDatabaseNameHere');
-```
-Common.js
-```js
-const { localStorageSync } = require('localstorage-nodejs');
-let localStorage = new localStorageSync('yourDatabaseNameHere');
-```
-2. Synchronous vs Asynchronous Mode
+There are only 2 things to remember about this library.
+1. Synchronous vs Asynchronous Mode
 
 There are two modes available: synchronous and asynchronous.
 
