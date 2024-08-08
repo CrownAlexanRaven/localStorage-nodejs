@@ -1,7 +1,7 @@
 {
   "name": "localstorage-nodejs",
   "type": "module",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A implementation of the localStorage Web API in Node.js!",
   "module": "index.mjs",
   "author": "CrownAlexanRaven",

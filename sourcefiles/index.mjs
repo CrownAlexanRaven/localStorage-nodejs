@@ -15,7 +15,6 @@ export default class LocalStorage {
                     }
                 } catch (error) {
                     if (error.code === 'ENOENT') {
-                        console.log('Creating localStorage database.');
                         await fs.promises.mkdir(this.store_prefix, {
                             recursive: true
                         });
